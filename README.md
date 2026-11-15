@@ -6,7 +6,7 @@
 | --- | --- | --- |
 | Rafael Meirelles Alves Ferreira | RM574688 | 1CCPB |
 
-📹 Vídeo (YouTube, não listado): _colocar o link aqui_
+📹 Vídeo (YouTube, não listado): https://youtu.be/UfyFIkozsCw
 
 ---
 
