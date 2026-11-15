@@ -27,23 +27,40 @@ RENDIMENTO = 0.75        # perdas do sistema solar (75% aproveitado)
 DIAS = 30                # período de referência: 1 mês
 
 # Alternativa A: convencional (rede elétrica + timer fixo)
+# Preços: média de 2 lojas quando encontrado (ver README, seção 3)
 A = {
     "nome": "A - Rede elétrica + timer",
     "potencia_w": 370,         # bomba periférica 1/2 cv
     "horas_dia": 1.0,          # timer liga 1 h todo dia
     "vazao_l_h": 1500,
-    "custo_instalacao": 350 + 60 + 200 + 1500,  # bomba + timer + mangueiras + padrão de entrada
+    "custos": {
+        "Bomba periférica 1/2 cv": 157.40,
+        "Timer digital de tomada": 37.99,
+        "Microaspersores + mangueira": 183.58,
+        "Padrão de entrada monofásico (ligação nova)": 1926.30,
+    },
 }
 
 # Alternativa B: solar off-grid + sensor de umidade + gotejamento
 B = {
     "nome": "B - Solar + sensor (ESP32)",
-    "potencia_w": 100,         # bomba DC 12 V
-    "vazao_l_h": 480,
+    "potencia_w": 80,          # bomba DC 12 V 80 W (5,5 L/min)
+    "vazao_l_h": 330,
     "controle_w": 1.0,         # ESP32 + sensores ligados 24 h
-    "custo_instalacao": 400 + 80 + 666 + 350 + 150 + 400 + 150,
-    # painel 100W + controlador + bateria 70Ah + bomba + ESP32/sensores + gotejamento + cabos
+    "painel_w": 155,
+    "custos": {
+        "Painel solar 155 W": 412.42,
+        "Controlador de carga PWM 20 A": 157.19,
+        "Bateria estacionária 12 V 70 Ah": 625.40,
+        "Bomba DC 12 V 80 W": 189.00,
+        "ESP32": 48.34,
+        "Sensores (umidade do solo, BME280) e relé": 120.00,
+        "Gotejamento (fita, mangueira, conectores)": 457.26,
+        "Cabos e suporte do painel": 150.00,
+    },
 }
+A["custo_instalacao"] = round(sum(A["custos"].values()), 2)
+B["custo_instalacao"] = round(sum(B["custos"].values()), 2)
 
 
 # ------------------------------------------------------------
@@ -95,7 +112,7 @@ custo_mes_b = 0.0
 # Dimensionamento solar (pior caso: bomba todo dia)
 consumo_max_wh = B["potencia_w"] * (AGUA_DIA_L / B["vazao_l_h"]) + B["controle_w"] * 24
 painel_min_w = consumo_max_wh / (HSP * RENDIMENTO)
-geracao_mes_kwh = 100 * HSP * RENDIMENTO * DIAS / 1000   # painel de 100 W
+geracao_mes_kwh = B["painel_w"] * HSP * RENDIMENTO * DIAS / 1000
 
 # ------------------------------------------------------------
 # 3) INDICADORES
@@ -154,8 +171,14 @@ st.line_chart(acumulado)
 st.subheader("Dimensionamento do sistema solar")
 st.write(f"- Consumo máximo da alternativa B: **{consumo_max_wh:.0f} Wh/dia**")
 st.write(f"- Painel mínimo: {consumo_max_wh:.0f} ÷ ({HSP} × {RENDIMENTO}) = "
-         f"**{painel_min_w:.0f} W** → escolhido **1 painel de 100 W**")
-st.write(f"- Geração estimada do painel de 100 W: **{geracao_mes_kwh:.1f} kWh/mês**")
+         f"**{painel_min_w:.0f} W** → escolhido **1 painel de {B['painel_w']} W**")
+st.write(f"- Geração estimada do painel de {B['painel_w']} W: **{geracao_mes_kwh:.1f} kWh/mês**")
+
+with st.expander("Ver custos de instalação item a item"):
+    for alt in (A, B):
+        st.markdown(f"**{alt['nome']}** – total R$ {alt['custo_instalacao']:.2f}")
+        st.dataframe(pd.DataFrame(list(alt["custos"].items()), columns=["Item", "R$"]),
+                     hide_index=True, width="stretch")
 
 with st.expander("Ver dados simulados dos 30 dias"):
     st.dataframe(df, hide_index=True, width="stretch")

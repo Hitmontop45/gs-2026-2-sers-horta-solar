@@ -44,18 +44,18 @@ Fórmula usada: **E (kWh) = P (W) × t (h) / 1000**
 
 | Equipamento | Potência | Uso | Energia |
 | --- | --- | --- | --- |
-| Bomba DC 12 V (480 L/h) | 100 W | 1000 ÷ 480 = 2,08 h/dia | 100 × 2,08 / 1000 = **0,208 kWh/dia** |
+| Bomba DC 12 V (5,5 L/min = 330 L/h) | 80 W | 1000 ÷ 330 = 3,03 h/dia | 80 × 3,03 / 1000 = **0,242 kWh/dia** |
 | ESP32 + sensores | 1 W | 24 h/dia | 1 × 24 / 1000 = **0,024 kWh/dia** |
-| **Total (pior caso, bomba todos os dias)** | | | **0,232 kWh/dia ≈ 7,0 kWh/mês** |
+| **Total (pior caso, bomba todos os dias)** | | | **0,266 kWh/dia ≈ 8,0 kWh/mês** |
 
-Na alternativa B a bomba só liga quando o solo está seco. Na simulação de 30 dias (cerca de 30% dos dias com chuva), o consumo real foi de **4,5 kWh/mês**.
+Na alternativa B a bomba só liga quando o solo está seco. Na simulação de 30 dias (cerca de 30% dos dias com chuva), o consumo real foi de **5,1 kWh/mês**.
 
 **Dimensionamento do sistema solar**
 
 - Horas de sol pleno (HSP) em São Paulo: **4,5 h/dia**. Rendimento do sistema (perdas): **75%**.
-- Painel mínimo = 232 Wh ÷ (4,5 × 0,75) = **69 W** → escolhido **1 painel de 100 W** (sobra margem para o inverno)
-- Geração estimada: 100 × 4,5 × 0,75 = 337,5 Wh/dia ≈ **10,1 kWh/mês**
-- Bateria para 1,5 dia sem sol: 232 × 1,5 ÷ (12 V × 50% de descarga) = **58 Ah** → **bateria estacionária de 60–70 Ah**
+- Painel mínimo = 266 Wh ÷ (4,5 × 0,75) = **79 W** → escolhido **1 painel de 155 W**. Ele custa praticamente o mesmo que um de 100 W e dá folga para o inverno e para dias nublados.
+- Geração estimada: 155 × 4,5 × 0,75 = 523 Wh/dia ≈ **15,7 kWh/mês**
+- Bateria para 1,5 dia sem sol: 266 × 1,5 ÷ (12 V × 50% de descarga) = **66,5 Ah** → **bateria estacionária de 70 Ah**
 
 **Outras premissas**
 
@@ -71,19 +71,44 @@ As duas alternativas atendem **a mesma necessidade** (irrigar 1.000 L/dia numa h
 
 | Critério | A – Rede elétrica + timer | B – Solar + sensor + gotejamento |
 | --- | --- | --- |
-| Consumo de energia | 11,1 kWh/mês | 4,5 kWh/mês (máx. 7,0) |
+| Consumo de energia | 11,1 kWh/mês | 5,1 kWh/mês (máx. 8,0) |
 | Energia vinda da rede | 11,1 kWh/mês | **0 kWh/mês** |
 | Energia renovável | Parcial (mix da rede) | **100% solar** |
 | Água usada (simulação) | 45 m³/mês | **18 m³/mês (−60%)** |
-| Custo de instalação (estimado) | ≈ R$ 2.110 | ≈ R$ 2.196 |
+| Custo de instalação | R$ 2.305,27 | **R$ 2.159,61** |
 | Custo de operação | ≈ R$ 30/mês (mínimo de 30 kWh) | **R$ 0/mês** de energia |
-| Retorno do investimento | — | ≈ 3 meses (diferença de R$ 86 ÷ R$ 30/mês) |
+| Custo em 5 anos (instalação + energia) | R$ 4.105,27 | **R$ 2.159,61** |
 | CO₂ evitado | — | ≈ 5,1 kg/ano |
 
-**Composição dos custos de instalação (estimativas de referência, nov/2026)**
+### Pesquisa de preços (novembro de 2026)
 
-- **A:** bomba periférica ½ cv (R$ 350) + timer (R$ 60) + mangueiras/aspersores (R$ 200) + padrão de entrada e ligação nova (R$ 1.500)
-- **B:** painel 100 W (R$ 400) + controlador PWM (R$ 80) + bateria estacionária 70 Ah (R$ 666) + bomba 12 V 100 W (R$ 350) + ESP32 e sensores (R$ 150) + kit de gotejamento (R$ 400) + cabos e suporte (R$ 150)
+Os preços foram pesquisados em duas lojas sempre que possível; o valor usado é a média. Os preços são à vista e não incluem frete.
+
+**Alternativa A**
+
+| Item | Loja 1 | Loja 2 | Valor usado |
+| --- | --- | --- | --- |
+| Bomba periférica ½ cv | Magazine Luiza – Ferrari Acquapump: R$ 149,90 | Loja do Mecânico – Razi BP½: R$ 164,90 | R$ 157,40 |
+| Timer digital de tomada | Magazine Luiza – Timer LCD 20 programações: R$ 37,99 | — | R$ 37,99 |
+| Microaspersores + mangueira | Magazine Luiza – kit 50 microaspersores: R$ 123,68 | Mercado Livre – mangueira ½" 50 m: R$ 59,90 | R$ 183,58 (soma) |
+| Padrão de entrada monofásico | Tabela SINAPI 05/2026 (sem poste): R$ 1.926,30 | Monitor do Mercado (2026): R$ 1.800 a R$ 3.000 | R$ 1.926,30 |
+| **Total** | | | **R$ 2.305,27** |
+
+**Alternativa B**
+
+| Item | Loja 1 | Loja 2 | Valor usado |
+| --- | --- | --- | --- |
+| Painel solar 155 W (Resun) | Mercado Livre: R$ 405,89 | Magazine Luiza: R$ 418,95 | R$ 412,42 |
+| Controlador de carga PWM 20 A (Epever LS2024EU) | Magazine Luiza: R$ 157,19 | — | R$ 157,19 |
+| Bateria estacionária Moura 12 V 70 Ah (12MN1000) | Magazine Luiza: R$ 665,90 | Mercado Livre: R$ 584,90 | R$ 625,40 |
+| Bomba DC 12 V 80 W (5,5 L/min) | Magazine Luiza: R$ 189,00 | — | R$ 189,00 |
+| ESP32 DevKit | Magazine Luiza: R$ 57,31 | Mercado Livre: R$ 39,36 | R$ 48,34 |
+| Sensores (umidade do solo, BME280) e relé | Magazine Luiza – BME280: R$ 88,00 | — | R$ 120,00 (estimativa do conjunto) |
+| Gotejamento | Mercado Livre – fita 1.000 m: R$ 287,87 + mangueira ½" 50 m: R$ 59,90 | Magazine Luiza – 50 conectores: R$ 109,49 | R$ 457,26 (soma) |
+| Cabos e suporte do painel | — | — | R$ 150,00 (estimativa) |
+| **Total** | | | **R$ 2.159,61** |
+
+Itens com "—" na loja 2 não tinham preço visível em uma segunda loja na data da pesquisa; itens marcados como estimativa não tiveram preço confirmado em loja.
 
 ### Viabilidade técnica
 
@@ -102,7 +127,7 @@ As duas alternativas atendem **a mesma necessidade** (irrigar 1.000 L/dia numa h
 | **A** | Equipamento barato; funciona com qualquer clima | Conta mensal fixa; desperdiça água; depende de ligação nova |
 | **B** | Conta zero; autonomia; economiza água; gera dados para o dashboard | Troca de bateria; produz menos em dias nublados seguidos; risco de furto do painel |
 
-**Conclusão:** a alternativa B custa praticamente o mesmo para instalar, **zera a conta de energia** e **reduz o consumo de água em cerca de 60%**. Como a rede brasileira já é limpa, o ganho de CO₂ é pequeno (≈ 5 kg/ano). Os principais benefícios são **economia de água, autonomia e custo zero de operação**.
+**Conclusão:** a alternativa B é **cerca de R$ 146 mais barata para instalar**, porque dispensa o padrão de entrada. Ela também **zera a conta de energia** e **reduz o consumo de água em cerca de 60%**. Em 5 anos, a economia é de quase R$ 1.950. Como a rede brasileira já é limpa, o ganho de CO₂ é pequeno (≈ 5 kg/ano). Os principais benefícios são **economia de água, autonomia e custo zero de operação**.
 
 ---
 
@@ -110,7 +135,7 @@ As duas alternativas atendem **a mesma necessidade** (irrigar 1.000 L/dia numa h
 
 ```mermaid
 flowchart LR
-    SOL["☀️ Painel solar<br/>100 W"] --> CTRL["Controlador<br/>de carga PWM"]
+    SOL["☀️ Painel solar<br/>155 W"] --> CTRL["Controlador<br/>de carga PWM"]
     CTRL <--> BAT["🔋 Bateria<br/>12 V 70 Ah"]
     CTRL --> ESP["ESP32<br/>lógica de automação"]
 
@@ -119,7 +144,7 @@ flowchart LR
 
     ESP -->|"solo seco<br/>(umidade < 50%)"| RELE["Relé"]
     CTRL -->|"12 V"| RELE
-    RELE --> BOMBA["💧 Bomba DC 12 V<br/>100 W"]
+    RELE --> BOMBA["💧 Bomba DC 12 V<br/>80 W"]
     CAIXA["Reservatório<br/>de água"] --> BOMBA
     BOMBA --> GOTA["Gotejamento<br/>nos canteiros"]
 
@@ -141,7 +166,7 @@ flowchart LR
 
 | Indicador | Unidade | Resultado estimado | Como é calculado |
 | --- | --- | --- | --- |
-| Consumo de energia | kWh/mês | A: 11,1 · B: 4,5 | Σ P × t / 1000 |
+| Consumo de energia | kWh/mês | A: 11,1 · B: 5,1 | Σ P × t / 1000 |
 | Energia da rede evitada | kWh/mês | 11,1 | consumo de A − energia da rede em B (0) |
 | Redução de custos | R$/mês | 30,00 | máx(consumo A; 30 kWh) × tarifa |
 | Participação de energia renovável | % | 100 | energia solar ÷ consumo de B |
@@ -186,4 +211,6 @@ Os dados de clima e umidade do solo dos 30 dias são **simulados**: cerca de 30%
 - Tarifas Enel SP (TUSD e TE), fatura de fev/2026. https://www.camara.leg.br/cota-parlamentar/documentos/publ/1402/2026/8055366.pdf
 - Reajuste tarifário Enel SP 2026 (10,18%). https://istoedinheiro.com.br/conta-de-luz-enel-sao-paulo
 - Fator de emissão do SIN 2023 – MCTI (38,5 kg CO₂/MWh). https://www.osetoreletrico.com.br/?p=159478
-- Bomba solar 12 V 100 W 480 L/h (referência de produto). https://www.mercadolivre.com.br/loja/e-solar
+- Custo do padrão de entrada em 2026. https://monitordomercado.com.br/noticias/410146-quanto-custa-trocar-o-padrao-de-entrada-de-energia-para-suportar-os-novos-aparelhos-da-casa/
+- SINAPI 101495 – entrada de energia monofásica (05/2026). https://orcamentor.com/composicao/101495/
+- Preços pesquisados no Magazine Luiza (magazineluiza.com.br), Mercado Livre (mercadolivre.com.br) e Loja do Mecânico (lojadomecanico.com.br) em 15/11/2026.
